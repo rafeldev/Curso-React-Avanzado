@@ -1,17 +1,28 @@
 import React from 'react';
-import {ListOfCategories} from './components/ListOfCategories';
 import {GlobalStyle} from './styles/globalStyles'
-import {ListOfPhotoCards} from './container/ListOfPhotoCards'
 import  { Logo } from './components/Logo'
 
-export const App = () => (
-    <div>
-        <GlobalStyle />
-        <Logo />
-        <ListOfCategories />
-        {/* //le pasamos como parametro el id por el que queremos filtrar */}
-        <ListOfPhotoCards categoryId={1} />
-    </div>
+import { Home } from './Pages/Home'
+import { Detail } from './Pages/Detail'
 
-)
+import { Router } from '@reach/router'
+
+
+export const App = () => {
+    
+    return (
+        <div>
+            <GlobalStyle />
+            <Logo />
+            <Router>
+                <Home path='/' />
+                <Home path='/pet/:id' />
+                <Detail path='/detail/:detailId' />
+            </Router> 
+            
+        </div>
+
+    )
+}
+
 
