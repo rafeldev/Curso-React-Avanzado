@@ -1,23 +1,17 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Link } from '@reach/router'
 import { ImgWrapper, Img, Article } from './styles'
-import { useLocalStorage } from '../../hooks/useLocalStorage';
 import { useNearScreen } from '../../hooks/useNearScreen';
 import { FavButton } from '../../components/FavButton'
 import { ToggleLikeMutation } from '../../container/ToggleLikeMutation'
+import PropTypes from 'prop-types'
 
 
 const DEFAULT_IMAGE = 'https://res.cloudinary.com/midudev/image/upload/w_300/q_80/v1560262103/dogs.png'
 
 
-export const PhotoCard = ({id, likes = 0, src = DEFAULT_IMAGE}) => {
-    const [show, ref] = useNearScreen(); 
-    //vamos a obtener la id de cada like
-    const key = `like-${id}`
-    //vamos a tener a liked como una forma de guardar el like y el setliked como una forma de actualizarlo
-    const [liked, setLiked] = useLocalStorage(key, false)
- 
-
+export const PhotoCard = ({id, liked, likes = 0, src = DEFAULT_IMAGE}) => {
+    const [show, ref] = useNearScreen();
 
     return ( 
         //nos va a permitir capturar el elemento del DOM
@@ -34,10 +28,9 @@ export const PhotoCard = ({id, likes = 0, src = DEFAULT_IMAGE}) => {
                     {
                         (toggleLike) => {
                             const handleFavClick = () => {
-                                !liked && toggleLike({ variables: {
+                                toggleLike({ variables: {
                                     input: { id }
                                 } })
-                                setLiked(!liked)
                             }
                             return <FavButton liked={liked} likes={likes} onClick={handleFavClick} />
                         }
@@ -48,4 +41,20 @@ export const PhotoCard = ({id, likes = 0, src = DEFAULT_IMAGE}) => {
             
         </Article>
     )
+}
+
+PhotoCard.propTypes = {
+    id: PropTypes.string.isRequired,
+    liked: PropTypes.bool.isRequired,
+    src: PropTypes.string.isRequired,
+    likes: function (props, propName, componentName) {
+        const propValue = props[propName]
+
+        if(propValue === undefined){
+            return new Error(`${propName} value must be definded`)
+        }
+        if(propValue < 0) {
+            return new Error(`${propName} value must be grater than 0`)
+        }
+    }
 }
